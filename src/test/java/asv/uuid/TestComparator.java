@@ -6,9 +6,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Collections;
 
-/**
- * Created by albert on 2015/08/12.
- */
 public class TestComparator {
 
     /**

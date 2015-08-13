@@ -5,9 +5,6 @@ import org.junit.Test;
 
 import java.text.ParseException;
 
-/**
- * Created by albert on 2015/06/07.
- */
 public class TestUUIDString {
     @Test
     public void testStringOps() throws ParseException {

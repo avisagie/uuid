@@ -1,8 +1,5 @@
 package asv.uuid;
 
-/**
- * Created by albert on 2015/06/07.
- */
 public class Benchmark {
 
     public static final int NUM = 10000000;

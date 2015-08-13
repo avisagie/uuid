@@ -3,9 +3,6 @@ package asv.uuid;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * Created by albert on 2015/06/07.
- */
 public class TestBytesOps {
     @Test
     public void testByteOps() {
