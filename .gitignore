@@ -1,3 +1,11 @@
 build
 *~
 .gradle
+*.class
+.classpath
+out
+*.iml
+*.iws
+*.ipr
+.project
+.settings
