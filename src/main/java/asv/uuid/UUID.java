@@ -1,20 +1,7 @@
 package asv.uuid;
 
-import javax.crypto.*;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.Serializable;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,27 +40,34 @@ public final class UUID implements Serializable, Comparable<UUID> {
 
     @Override
     public String toString() {
-        final byte[] bytes = toBytes(msb, lsb);
-        return String.format("%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-                bytes[0], bytes[1], bytes[2], bytes[3], bytes[4], bytes[5], bytes[6], bytes[7],
-                bytes[8], bytes[9], bytes[10], bytes[11], bytes[12], bytes[13], bytes[14], bytes[15]);
+        return String.format("%08x-%04x-%04x-%04x-%012x",
+                (msb >> 32) & 0xFFFFFFFFL,
+                (msb >> 16) & 0xFFFFL,
+                (msb >> 0) & 0xFFFFL,
+                (lsb >> 48) & 0xFFFFL,
+                (lsb >> 0) & 0xFFFFFFFFFFFFL);
     }
 
-    private static final Pattern parse = Pattern.compile("\\{?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})-([0-9a-f]{2})([0-9a-f]{2})-([0-9a-f]{2})([0-9a-f]{2})-([0-9a-f]{2})([0-9a-f]{2})-([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})\\}?");
+    private static final Pattern splitter = Pattern.compile("-");
 
     public static UUID fromString(String s) throws ParseException {
-        final Matcher match = parse.matcher(s.toLowerCase());
-        if (!match.matches()) {
-            throw new ParseException("not a uuid: " + s, 0);
+        final String[] strings;
+        if (s.startsWith("{")) {
+            strings = splitter.split(s.replace("{", "").replace("}", ""));
+        } else {
+            strings = splitter.split(s);
         }
-        if (match.groupCount() != 16) {
-            throw new ParseException("not a uuid: " + s, 0);
+
+        if (strings.length != 5) {
+            throw new ParseException("Not a UUID: " + s, 0);
         }
-        final byte[] bytes = new byte[16];
-        for (int ii = 0; ii < 16; ii++) {
-            bytes[ii] = (byte) (Integer.parseInt(match.group(ii + 1), 16) & 0xff);
-        }
-        return new UUID(msbFromBytes(bytes), lsbFromBytes(bytes));
+
+        return new UUID(
+                (Long.parseLong(strings[0], 16) << 32)
+                        | (Long.parseLong(strings[1], 16) << 16)
+                        | (Long.parseLong(strings[2], 16) << 0),
+                (Long.parseLong(strings[3], 16) << 48)
+                        | (Long.parseLong(strings[4], 16) << 0));
     }
 
     public byte[] toBytes() {
@@ -99,7 +93,7 @@ public final class UUID implements Serializable, Comparable<UUID> {
      * Lexicographic unsigned byte-wise comparison.
      *
      * @param o
-     * @return
+     * @return -1 for <, +1 for >, 0 for ==
      */
     @Override
     public int compareTo(UUID o) {
@@ -125,66 +119,6 @@ public final class UUID implements Serializable, Comparable<UUID> {
         if (a1 < b1) return -1;
 
         return 0;
-    }
-
-    private static class RandomUUIDGenerator {
-        // TODO Add IP or MAC?
-
-        private static final AtomicLong counter;
-        private static final long start;
-        private static final SecretKeySpec skeySpec;
-        private static final ThreadLocal<Cipher> cipher = new ThreadLocal<Cipher>() {
-            @Override
-            protected Cipher initialValue() {
-                try {
-                    final Cipher ciph = Cipher.getInstance("AES/ECB/NoPadding");
-                    ciph.init(Cipher.ENCRYPT_MODE, skeySpec);
-                    return ciph;
-                } catch (Exception e) {
-                    throw new RuntimeException();
-                }
-            }
-        };
-
-        static {
-            try {
-                final SecureRandom rand = SecureRandom.getInstanceStrong();
-                counter = new AtomicLong(rand.nextLong());
-                start = rand.nextLong();
-
-                final byte[] keyBytes = new byte[16];
-                rand.nextBytes(keyBytes);
-                skeySpec = new SecretKeySpec(keyBytes, "AES");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        static UUID next() {
-            final long c = counter.incrementAndGet();
-            final long t = System.currentTimeMillis() ^ start;
-            final byte[] bytes = toBytes(c, t);
-
-            // encrypt
-            final byte[] ret;
-            synchronized (cipher) {
-                try {
-                    ret = cipher.get().doFinal(bytes);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            ret[6] &= 0x0f;  /* clear version        */
-            ret[6] |= 0x40;  /* set to version 4     */
-            ret[8] &= 0x3f;  /* clear variant        */
-            ret[8] |= 0x80;  /* set to IETF variant  */
-
-            final long lsb = lsbFromBytes(ret);
-            final long msb = msbFromBytes(ret);
-
-            return new UUID(msb, lsb);
-        }
     }
 
     static byte[] toBytes(long msb, long lsb) {
@@ -242,104 +176,39 @@ public final class UUID implements Serializable, Comparable<UUID> {
         return RandomUUIDGenerator.next();
     }
 
+    public static UUID randomUUID() {
+        return random();
+    }
+
     /**
-     * Generates a UUID5 like UUID via SHA1 hashing of time, MACs and a random
+     * Generates a UUID5 like UUID via SHA1 hashing of MACs, a counter and a random
      * seed. Fixes the first 32 bits to a timestamp so that the UUIDs in
      * lexicographic order matches time order. The timestamp component will
      * wrap in the year 2106.
      */
     public static UUID epoch() {
-        return Sha1Generator.generate(true);
+        return Sha1Generator.generateUnique(true);
     }
 
     /**
-     * Generates a UUID5 like UUID via SHA1 hashing of time, random seed and MACs. It should have better
-     * uniqueness properties than the random uuid by tying the UUID to unique time and space.
+     * Generates a UUID5 like UUID via SHA1 hashing of time, counter, random seed and MACs.
+     * It should have better uniqueness properties than the random uuid by tying the UUID
+     * to unique time and space.
      */
     public static UUID sha1() {
-        return Sha1Generator.generate(false);
+        return Sha1Generator.generateUnique(false);
     }
 
-    static private final class Sha1Generator {
-        static ThreadLocal<MessageDigest> sha1s = new ThreadLocal<MessageDigest>() {
-            @Override
-            protected MessageDigest initialValue() {
-                try {
-                    return MessageDigest.getInstance("SHA-1");
-                } catch (NoSuchAlgorithmException e) {
-                    throw new IllegalStateException(e);
-                }
-            }
-        };
+    /**
+     * Generates a UUID5 using a name and sha1. The first 16 bytes from the
+     * resulting sha1 hash is returned with the appropriate version and variant
+     * set.
+     */
+    public static UUID name(byte[] name) {
+        return Sha1Generator.generate5(name);
+    }
 
-        static final byte[] macs;
-        static final SecureRandom rnd = new SecureRandom();
-        static final AtomicLong counter = new AtomicLong(rnd.nextLong());
-
-        static {
-            macs = init();
-        }
-
-        private static byte[] init() {
-            final ByteArrayOutputStream out = new ByteArrayOutputStream();
-            try {
-                final Enumeration<NetworkInterface> iter = NetworkInterface.getNetworkInterfaces();
-                while (iter.hasMoreElements()) {
-                    final NetworkInterface nif = iter.nextElement();
-                    final byte[] a = nif.getHardwareAddress();
-                    if (a != null) {
-                        out.write(a);
-                    }
-                }
-            } catch (SocketException e) {
-                log.log(Level.WARNING, "Error getting mac addresses:", e);
-                return random().toBytes();
-            } catch (IOException e) {
-                throw new IllegalStateException("Impossible", e);
-            }
-
-            // Less than this is an issue. Use a random "mac".
-            if (out.size() < 6) {
-                return random().toBytes();
-            }
-
-            // Some hosts have lots of NICs. It slows things down and does not
-            // really contribute anything. At least shorten to 20.
-            if (out.size() > 20) {
-                final MessageDigest digest = sha1s.get();
-                return digest.digest(out.toByteArray());
-            }
-
-            return out.toByteArray();
-        }
-
-        static UUID generate(boolean includeEpoch) {
-            final long now = System.currentTimeMillis();
-
-            final MessageDigest digest = sha1s.get();
-            digest.reset();
-
-            digest.update(macs);
-            if (!includeEpoch) digestLong(digest, now);
-            digestLong(digest, counter.incrementAndGet());
-
-            final byte[] hash = digest.digest();
-
-            if (includeEpoch) {
-                final long epoch = now / 1000L;
-                hash[0] = (byte) ((epoch >>> 24) & 0xFF);
-                hash[1] = (byte) ((epoch >>> 16) & 0xFF);
-                hash[2] = (byte) ((epoch >>> 8) & 0xFF);
-                hash[3] = (byte) ((epoch >>> 0) & 0xFF);
-            }
-
-            return UUID.fromBytes(Arrays.copyOf(hash, 16));
-        }
-
-        private static void digestLong(MessageDigest digest, long c) {
-            for (int ii = 0; ii < 8; ii++) {
-                digest.update((byte) ((c >>> (ii * 8)) & 0xFF));
-            }
-        }
+    public static UUID nameUUIDFromBytes(byte[] name) {
+        return Sha1Generator.generate5(name);
     }
 }
