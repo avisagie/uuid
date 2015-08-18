@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.UUID;
 
 public class TestComparator {
 
@@ -15,7 +16,7 @@ public class TestComparator {
     public void test() {
         ArrayList<UUID> uuids = new ArrayList<>();
         for (int ii = 0; ii < 100; ii++) {
-            uuids.add(UUID.random());
+            uuids.add(UUIDUtil.randomUUID());
         }
 
         ArrayList<String> strings = new ArrayList<String>();
@@ -23,27 +24,7 @@ public class TestComparator {
             strings.add(x.toString());
         }
 
-        Collections.sort(uuids);
-        Collections.sort(strings);
-
-        for (int ii = 0; ii < 100; ii++) {
-            Assert.assertEquals(uuids.get(ii).toString(), strings.get(ii).toString());
-        }
-    }
-
-    @Test
-    public void testJUUUID() {
-        ArrayList<java.util.UUID> uuids = new ArrayList<>();
-        for (int ii = 0; ii < 100; ii++) {
-            uuids.add(UUID.random().toJava());
-        }
-
-        ArrayList<String> strings = new ArrayList<String>();
-        for (java.util.UUID x : uuids) {
-            strings.add(x.toString());
-        }
-
-        Collections.sort(uuids, new UUIDLexicographicComparator());
+        Collections.sort(uuids, UUIDUtil.lexicographicComparator());
         Collections.sort(strings);
 
         for (int ii = 0; ii < 100; ii++) {

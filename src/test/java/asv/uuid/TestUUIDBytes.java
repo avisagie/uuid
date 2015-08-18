@@ -4,14 +4,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.text.ParseException;
+import java.util.UUID;
 
 public class TestUUIDBytes {
     @Test
     public void testStringOps() throws ParseException {
         for (int ii=0; ii<100; ii++) {
-            final UUID uuid = UUID.random();
-            final byte[] bytes = uuid.toBytes();
-            final UUID uuid2 = UUID.fromBytes(bytes);
+            final UUID uuid = UUIDUtil.randomUUID();
+            final byte[] bytes = UUIDUtil.toBytes(uuid);
+            final UUID uuid2 = UUIDUtil.fromBytes(bytes);
             Assert.assertEquals(uuid, uuid2);
         }
     }

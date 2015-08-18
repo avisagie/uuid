@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * Created by albert on 2015/08/16.
  */
 final class Sha1Generator {
-    private static final Logger log = Logger.getLogger(UUID.class.getCanonicalName());
+    private static final Logger log = Logger.getLogger(Sha1Generator.class.getCanonicalName());
 
     static ThreadLocal<MessageDigest> sha1s = new ThreadLocal<MessageDigest>() {
         @Override
@@ -31,10 +31,11 @@ final class Sha1Generator {
     };
 
     static final byte[] macs;
-    static final SecureRandom rnd = new SecureRandom();
-    static final AtomicLong counter = new AtomicLong(rnd.nextLong());
+    static final AtomicLong counter;
 
     static {
+        final SecureRandom rnd = new SecureRandom();
+        counter = new AtomicLong(rnd.nextLong());
         macs = init();
     }
 
@@ -51,14 +52,14 @@ final class Sha1Generator {
             }
         } catch (SocketException e) {
             log.log(Level.WARNING, "Error getting mac addresses:", e);
-            return UUID.random().toBytes();
+            return RandomUUIDGenerator.nextBytes();
         } catch (IOException e) {
             throw new IllegalStateException("Impossible", e);
         }
 
         // Less than this is an issue. Use a random "mac".
         if (out.size() < 6) {
-            return UUID.random().toBytes();
+            return RandomUUIDGenerator.nextBytes();
         }
 
         // Some hosts have lots of NICs. It slows things down and does not
@@ -69,11 +70,6 @@ final class Sha1Generator {
         }
 
         return out.toByteArray();
-    }
-
-    static UUID generate5(byte[] name) {
-        final byte[] bytes = generate5Bytes(name);
-        return UUID.fromBytes(bytes);
     }
 
     static java.util.UUID generate5Java(byte[] name) {
@@ -95,10 +91,6 @@ final class Sha1Generator {
         hash[8] |= 0x80;
 
         return Arrays.copyOf(hash, 16);
-    }
-
-    static UUID generateUnique(boolean includeEpoch) {
-        return UUID.fromBytes(generateUniqueBytes(includeEpoch));
     }
 
     static java.util.UUID generateUniqueJava(boolean includeEpoch) {

@@ -9,7 +9,7 @@ public class TestBytesOps {
         final long x = 0xEDF01234;
         final long y = 0x1D3C5B7A;
 
-        byte[] bytes = UUID.toBytes(x, y);
+        byte[] bytes = UUIDUtil.toBytes(x, y);
         final long c = UUIDUtil.msbFromBytes(bytes);
         final long t = UUIDUtil.lsbFromBytes(bytes);
 

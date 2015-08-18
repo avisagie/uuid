@@ -1,5 +1,7 @@
 package asv.uuid;
 
+import java.util.UUID;
+
 /**
  * Utilities to get the benefits of UUID with java.util.UUID.
  */
@@ -7,6 +9,7 @@ public class UUIDUtil {
     /**
      * Generate random UUIDs but much faster and without the
      * risk of exhausting Linux's entropy pool.
+     *
      * @return
      */
     public static java.util.UUID randomUUID() {
@@ -16,10 +19,21 @@ public class UUIDUtil {
     /**
      * Generate UUIDs that have better uniqueness gaurantees than random
      * UUIDs in addition to being sortable by generation time.
+     *
      * @return
      */
     public static java.util.UUID epoch() {
         return Sha1Generator.generateUniqueJava(true);
+    }
+
+    /**
+     * Generate UUIDs that have better uniqueness gaurantees than random
+     * UUIDs.
+     *
+     * @return
+     */
+    public static java.util.UUID uniquer() {
+        return Sha1Generator.generateUniqueJava(false);
     }
 
     public static java.util.UUID uuid5(byte[] name) {
@@ -75,5 +89,36 @@ public class UUIDUtil {
                 ((ret[13] & 0xFFL) << 16) |
                 ((ret[14] & 0xFFL) << 8) |
                 ((ret[15] & 0xFFL) << 0);
+    }
+
+    static byte[] toBytes(long msb, long lsb) {
+        final byte[] bytes = new byte[16];
+
+        bytes[0] = (byte) ((msb >> 56) & 0xFFL);
+        bytes[1] = (byte) ((msb >> 48) & 0xFFL);
+        bytes[2] = (byte) ((msb >> 40) & 0xFFL);
+        bytes[3] = (byte) ((msb >> 32) & 0xFFL);
+        bytes[4] = (byte) ((msb >> 24) & 0xFFL);
+        bytes[5] = (byte) ((msb >> 16) & 0xFFL);
+        bytes[6] = (byte) ((msb >> 8) & 0xFFL);
+        bytes[7] = (byte) ((msb >> 0) & 0xFFL);
+
+        bytes[8] = (byte) ((lsb >> 56) & 0xFFL);
+        bytes[9] = (byte) ((lsb >> 48) & 0xFFL);
+        bytes[10] = (byte) ((lsb >> 40) & 0xFFL);
+        bytes[11] = (byte) ((lsb >> 32) & 0xFFL);
+        bytes[12] = (byte) ((lsb >> 24) & 0xFFL);
+        bytes[13] = (byte) ((lsb >> 16) & 0xFFL);
+        bytes[14] = (byte) ((lsb >> 8) & 0xFFL);
+        bytes[15] = (byte) ((lsb >> 0) & 0xFFL);
+        return bytes;
+    }
+
+    public static byte[] toBytes(UUID uuid) {
+        return toBytes(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits());
+    }
+
+    public static UUID fromBytes(byte[] bytes) {
+        return new UUID(msbFromBytes(bytes), lsbFromBytes(bytes));
     }
 }
