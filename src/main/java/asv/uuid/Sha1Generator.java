@@ -72,6 +72,18 @@ final class Sha1Generator {
     }
 
     static UUID generate5(byte[] name) {
+        final byte[] bytes = generate5Bytes(name);
+        return UUID.fromBytes(bytes);
+    }
+
+    static java.util.UUID generate5Java(byte[] name) {
+        final byte[] bytes = generate5Bytes(name);
+        long msb = UUIDUtil.msbFromBytes(bytes);
+        long lsb = UUIDUtil.lsbFromBytes(bytes);
+        return new java.util.UUID(msb, lsb);
+    }
+
+    private static byte[] generate5Bytes(byte[] name) {
         final MessageDigest digest = sha1s.get();
         digest.reset();
         digest.update(name);
@@ -82,10 +94,21 @@ final class Sha1Generator {
         hash[8] &= 0x3f;
         hash[8] |= 0x80;
 
-        return UUID.fromBytes(Arrays.copyOf(hash, 16));
+        return Arrays.copyOf(hash, 16);
     }
 
     static UUID generateUnique(boolean includeEpoch) {
+        return UUID.fromBytes(generateUniqueBytes(includeEpoch));
+    }
+
+    static java.util.UUID generateUniqueJava(boolean includeEpoch) {
+        final byte[] bytes = generateUniqueBytes(includeEpoch);
+        final long msb = UUIDUtil.msbFromBytes(bytes);
+        final long lsb = UUIDUtil.lsbFromBytes(bytes);
+        return new java.util.UUID(msb, lsb);
+    }
+
+    private static byte[] generateUniqueBytes(boolean includeEpoch) {
         final long now = System.currentTimeMillis();
 
         final MessageDigest digest = sha1s.get();
@@ -105,7 +128,7 @@ final class Sha1Generator {
             hash[3] = (byte) ((epoch >>> 0) & 0xFF);
         }
 
-        return UUID.fromBytes(Arrays.copyOf(hash, 16));
+        return Arrays.copyOf(hash, 16);
     }
 
     private static void digestLong(MessageDigest digest, long c) {

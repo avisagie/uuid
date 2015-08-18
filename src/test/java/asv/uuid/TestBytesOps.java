@@ -10,8 +10,8 @@ public class TestBytesOps {
         final long y = 0x1D3C5B7A;
 
         byte[] bytes = UUID.toBytes(x, y);
-        final long c = UUID.msbFromBytes(bytes);
-        final long t = UUID.lsbFromBytes(bytes);
+        final long c = UUIDUtil.msbFromBytes(bytes);
+        final long t = UUIDUtil.lsbFromBytes(bytes);
 
         Assert.assertEquals(x, c);
         Assert.assertEquals(y, t);

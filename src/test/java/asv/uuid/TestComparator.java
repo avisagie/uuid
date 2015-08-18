@@ -30,4 +30,24 @@ public class TestComparator {
             Assert.assertEquals(uuids.get(ii).toString(), strings.get(ii).toString());
         }
     }
+
+    @Test
+    public void testJUUUID() {
+        ArrayList<java.util.UUID> uuids = new ArrayList<>();
+        for (int ii = 0; ii < 100; ii++) {
+            uuids.add(UUID.random().toJava());
+        }
+
+        ArrayList<String> strings = new ArrayList<String>();
+        for (java.util.UUID x : uuids) {
+            strings.add(x.toString());
+        }
+
+        Collections.sort(uuids, new UUIDLexicographicComparator());
+        Collections.sort(strings);
+
+        for (int ii = 0; ii < 100; ii++) {
+            Assert.assertEquals(uuids.get(ii).toString(), strings.get(ii).toString());
+        }
+    }
 }

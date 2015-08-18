@@ -42,6 +42,17 @@ class RandomUUIDGenerator {
     }
 
     static UUID next() {
+        return UUID.fromBytes(nextBytes());
+    }
+
+    static java.util.UUID nextJava() {
+        final byte[] ret = nextBytes();
+        final long lsb = UUIDUtil.lsbFromBytes(ret);
+        final long msb = UUIDUtil.msbFromBytes(ret);
+        return new java.util.UUID(msb, lsb);
+    }
+
+    private static byte[] nextBytes() {
         final long c = counter.incrementAndGet();
         final long t = System.currentTimeMillis() ^ start;
         final byte[] bytes = UUID.toBytes(c, t);
@@ -60,10 +71,6 @@ class RandomUUIDGenerator {
         ret[6] |= 0x40;  /* set to version 4     */
         ret[8] &= 0x3f;  /* clear variant        */
         ret[8] |= 0x80;  /* set to IETF variant  */
-
-        final long lsb = UUID.lsbFromBytes(ret);
-        final long msb = UUID.msbFromBytes(ret);
-
-        return new UUID(msb, lsb);
+        return ret;
     }
 }

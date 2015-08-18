@@ -3,10 +3,12 @@ package asv.uuid;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+/**
+ * Drop-in replacement for java.util.UUID, but with byte-wise lexicographic sorting and convenient generator methods.
+ */
 public final class UUID implements Serializable, Comparable<UUID> {
 
     private static final Logger log = Logger.getLogger(UUID.class.getCanonicalName());
@@ -78,7 +80,7 @@ public final class UUID implements Serializable, Comparable<UUID> {
         if (bytes.length != 16) {
             throw new IllegalArgumentException("UUID must be 16 bytes. This is " + bytes.length);
         }
-        return new UUID(msbFromBytes(bytes), lsbFromBytes(bytes));
+        return new UUID(UUIDUtil.msbFromBytes(bytes), UUIDUtil.lsbFromBytes(bytes));
     }
 
     public java.util.UUID toJava() {
@@ -92,36 +94,15 @@ public final class UUID implements Serializable, Comparable<UUID> {
     /**
      * Lexicographic unsigned byte-wise comparison.
      *
-     * @param o
+     * @param that
      * @return -1 for <, +1 for >, 0 for ==
      */
     @Override
-    public int compareTo(UUID o) {
-        // alas! no unsigneds
-        long a1 = msb >>> 32;
-        long b1 = o.msb >>> 32;
-        if (a1 > b1) return +1;
-        if (a1 < b1) return -1;
-
-        a1 = msb & 0xFFFFFFFFL;
-        b1 = o.msb & 0xFFFFFFFFL;
-        if (a1 > b1) return +1;
-        if (a1 < b1) return -1;
-
-        a1 = lsb >>> 32;
-        b1 = o.lsb >>> 32;
-        if (a1 > b1) return +1;
-        if (a1 < b1) return -1;
-
-        a1 = lsb & 0xFFFFFFFFL;
-        b1 = o.lsb & 0xFFFFFFFFL;
-        if (a1 > b1) return +1;
-        if (a1 < b1) return -1;
-
-        return 0;
+    public int compareTo(UUID that) {
+        return UUIDUtil.lexicographicCompare(this.msb, this.lsb, that.msb, that.lsb);
     }
 
-    static byte[] toBytes(long msb, long lsb) {
+    private static byte[] toBytes(long msb, long lsb) {
         final byte[] bytes = new byte[16];
 
         bytes[0] = (byte) ((msb >> 56) & 0xFFL);
@@ -142,28 +123,6 @@ public final class UUID implements Serializable, Comparable<UUID> {
         bytes[14] = (byte) ((lsb >> 8) & 0xFFL);
         bytes[15] = (byte) ((lsb >> 0) & 0xFFL);
         return bytes;
-    }
-
-    static long lsbFromBytes(byte[] ret) {
-        return ((ret[8] & 0xFFL) << 56) |
-                ((ret[9] & 0xFFL) << 48) |
-                ((ret[10] & 0xFFL) << 40) |
-                ((ret[11] & 0xFFL) << 32) |
-                ((ret[12] & 0xFFL) << 24) |
-                ((ret[13] & 0xFFL) << 16) |
-                ((ret[14] & 0xFFL) << 8) |
-                ((ret[15] & 0xFFL) << 0);
-    }
-
-    static long msbFromBytes(byte[] ret) {
-        return ((ret[0] & 0xFFL) << 56) |
-                ((ret[1] & 0xFFL) << 48) |
-                ((ret[2] & 0xFFL) << 40) |
-                ((ret[3] & 0xFFL) << 32) |
-                ((ret[4] & 0xFFL) << 24) |
-                ((ret[5] & 0xFFL) << 16) |
-                ((ret[6] & 0xFFL) << 8) |
-                ((ret[7] & 0xFFL) << 0);
     }
 
     /**
