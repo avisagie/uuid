@@ -29,7 +29,7 @@ class RandomUUIDGenerator {
 
     static {
         try {
-            final SecureRandom rand = SecureRandom.getInstanceStrong();
+            final SecureRandom rand = new SecureRandom();
             counter = new AtomicLong(rand.nextLong());
             start = rand.nextLong();
 

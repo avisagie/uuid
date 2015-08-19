@@ -73,10 +73,7 @@ final class Sha1Generator {
     }
 
     static java.util.UUID generate5Java(byte[] name) {
-        final byte[] bytes = generate5Bytes(name);
-        long msb = UUIDUtil.msbFromBytes(bytes);
-        long lsb = UUIDUtil.lsbFromBytes(bytes);
-        return new java.util.UUID(msb, lsb);
+        return UUIDUtil.fromBytes(generate5Bytes(name));
     }
 
     private static byte[] generate5Bytes(byte[] name) {
