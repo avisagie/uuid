@@ -33,7 +33,7 @@ public class Sanity {
     public void uniquer() {
         HashSet<UUID> all = new HashSet<>(NUM, 0.75f);
         for (int ii=0; ii<NUM; ii++) {
-            all.add(UUIDUtil.uniquer());
+            all.add(UUIDUtil.random());
         }
 
         Assert.assertEquals(NUM, all.size());

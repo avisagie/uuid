@@ -20,7 +20,7 @@ public class GenerateMany {
 
     private static void gen() throws Exception {
         // init everything so long
-        UUIDUtil.uniquer();
+        UUIDUtil.random();
         UUIDUtil.randomUUID();
 
         // Wait for the next 10s boundary to sync with others
@@ -33,7 +33,7 @@ public class GenerateMany {
         System.err.println("Generating " + (System.currentTimeMillis() % 10000));
         System.err.flush();
         for (int i = 0; i < NUM; i++) {
-            uuids.add(UUIDUtil.uniquer());
+            uuids.add(UUIDUtil.random());
         }
 
         System.err.println("Sorting");
