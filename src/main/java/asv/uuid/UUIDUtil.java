@@ -3,7 +3,8 @@ package asv.uuid;
 import java.util.UUID;
 
 /**
- * Utilities to get the benefits of UUID with java.util.UUID.
+ * Utilities to ease creation, parsing and serialization of java.util.UUID
+ * objects. Includes some fancy UUID generators with additional benefits.
  */
 public class UUIDUtil {
     /**
