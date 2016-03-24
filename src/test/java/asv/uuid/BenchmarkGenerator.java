@@ -21,7 +21,7 @@ public class BenchmarkGenerator {
 
         start = System.currentTimeMillis();
         for (int ii = 0; ii < NUM; ii++) {
-            UUIDUtil.uniquer();
+            UUIDUtil.random();
         }
         elapsed = System.currentTimeMillis() - start;
         System.out.println("uniquer: " + NUM + " took " + elapsed + "ms @ " + (long) ((NUM * 1000.0) / elapsed) + "/s");

@@ -17,7 +17,7 @@ public class UUIDUtil {
     }
 
     /**
-     * Generate UUIDs that have better uniqueness gaurantees than random
+     * Generate UUIDs that have better uniqueness behaviour than random
      * UUIDs in addition to being sortable by generation time.
      *
      * @return
@@ -27,7 +27,7 @@ public class UUIDUtil {
     }
 
     /**
-     * Generate UUIDs that have better uniqueness gaurantees than random
+     * Generate UUIDs that have better uniqueness behaviour than random
      * UUIDs in addition to being sortable by generation time. You get to
      * specify the timestamp.
      *
@@ -38,17 +38,30 @@ public class UUIDUtil {
     }
 
     /**
-     * Generate UUIDs that have better uniqueness gaurantees than random
+     * Generate UUIDs that should have better uniqueness behaviour than random
      * UUIDs.
      *
      * @return
      */
-    public static java.util.UUID uniquer() {
+    public static java.util.UUID random() {
         return Sha1Generator.generateUniqueJava(false, System.currentTimeMillis());
     }
 
     public static java.util.UUID uuid5(byte[] name) {
         return Sha1Generator.generate5Java(name);
+    }
+
+    /**
+     * Include a timestamp as the first four bytes of the uuid. This makes it sortable in time.
+     * 
+     * Excludes the timestamp from the hash.
+     * 
+     * @param name
+     * @param timestamp
+     * @return
+     */
+    public static java.util.UUID uuid5epoch(byte[] name, long timestamp) {
+        return Sha1Generator.generate5Java(name, timestamp);
     }
 
     static int lexicographicCompare(long amsb, long alsb, long bmsb, long blsb) {

@@ -17,7 +17,7 @@ public class GenerateMany {
 
     public static void main(String[] args) throws Exception {
         // init everything so long
-        uniquer();
+        random();
 
         for (;;) {
             genEpoch();
@@ -32,7 +32,6 @@ public class GenerateMany {
 
     private static void genRandom() throws Exception {
         int NUM = 1000000;
-
         final ArrayList<UUID> uuids = new ArrayList<>(NUM);
         System.err.println("Generating " + (System.currentTimeMillis() % 5000));
         System.err.flush();

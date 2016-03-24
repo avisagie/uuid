@@ -73,10 +73,14 @@ final class Sha1Generator {
     }
 
     static java.util.UUID generate5Java(byte[] name) {
-        return UUIDUtil.fromBytes(generate5Bytes(name));
+        return UUIDUtil.fromBytes(generate5Bytes(name, false, 0L));
     }
 
-    private static byte[] generate5Bytes(byte[] name) {
+    static java.util.UUID generate5Java(byte[] name, long time) {
+        return UUIDUtil.fromBytes(generate5Bytes(name, true, time));
+    }
+
+    private static byte[] generate5Bytes(byte[] name, boolean includeEpoch, long time) {
         final MessageDigest digest = sha1s.get();
         digest.reset();
         digest.update(name);
@@ -86,6 +90,14 @@ final class Sha1Generator {
         hash[6] |= 0x50;  // version 5
         hash[8] &= 0x3f;
         hash[8] |= 0x80;
+
+        if (includeEpoch) {
+            final long epoch = time / 1000L;
+            hash[0] = (byte) ((epoch >>> 24) & 0xFF);
+            hash[1] = (byte) ((epoch >>> 16) & 0xFF);
+            hash[2] = (byte) ((epoch >>> 8) & 0xFF);
+            hash[3] = (byte) ((epoch >>> 0) & 0xFF);
+        }
 
         return Arrays.copyOf(hash, 16);
     }
