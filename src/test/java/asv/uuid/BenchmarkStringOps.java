@@ -12,7 +12,7 @@ public class BenchmarkStringOps {
     public static void main(String[] args) throws ParseException {
         long start = System.currentTimeMillis();
         for (int ii = 0; ii < NUM; ii++) {
-            final UUID x = UUIDUtil.randomUUID();
+            final UUID x = UUIDUtil.random();
             final String s = x.toString();
             final UUID y = UUID.fromString(s);
             Assert.assertEquals(x, y);

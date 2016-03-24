@@ -9,10 +9,12 @@ public class UUIDUtil {
     /**
      * Generate random UUIDs but much faster and without the
      * risk of exhausting Linux's entropy pool.
+     * 
+     * Uses AES in counter mode. Starts with a SecureRandom IV.
      *
      * @return
      */
-    public static java.util.UUID randomUUID() {
+    public static java.util.UUID random() {
         return RandomUUIDGenerator.nextJava();
     }
 
@@ -39,11 +41,13 @@ public class UUIDUtil {
 
     /**
      * Generate UUIDs that should have better uniqueness behaviour than random
-     * UUIDs.
+     * UUIDs by virtue of hashing the mac addresses of the host together with a 
+     * counter. Each machine should generate a subset of the space. 
+     * Holding thumbs...  
      *
      * @return
      */
-    public static java.util.UUID random() {
+    public static java.util.UUID uniquer() {
         return Sha1Generator.generateUniqueJava(false, System.currentTimeMillis());
     }
 

@@ -16,7 +16,7 @@ public class TestComparator {
     public void test() {
         ArrayList<UUID> uuids = new ArrayList<>();
         for (int ii = 0; ii < 100; ii++) {
-            uuids.add(UUIDUtil.randomUUID());
+            uuids.add(UUIDUtil.random());
         }
 
         ArrayList<String> strings = new ArrayList<String>();

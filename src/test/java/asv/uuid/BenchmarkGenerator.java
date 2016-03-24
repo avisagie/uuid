@@ -7,7 +7,7 @@ public class BenchmarkGenerator {
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
         for (int ii = 0; ii < NUM; ii++) {
-            UUIDUtil.randomUUID();
+            UUIDUtil.random();
         }
         long elapsed = System.currentTimeMillis() - start;
         System.out.println("random: " + NUM + " took " + elapsed + "ms @ " + (long) ((NUM * 1000.0) / elapsed) + "/s");
@@ -21,7 +21,7 @@ public class BenchmarkGenerator {
 
         start = System.currentTimeMillis();
         for (int ii = 0; ii < NUM; ii++) {
-            UUIDUtil.random();
+            UUIDUtil.uniquer();
         }
         elapsed = System.currentTimeMillis() - start;
         System.out.println("uniquer: " + NUM + " took " + elapsed + "ms @ " + (long) ((NUM * 1000.0) / elapsed) + "/s");

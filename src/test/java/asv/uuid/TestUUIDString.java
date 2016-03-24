@@ -19,7 +19,7 @@ public class TestUUIDString {
     @Test
     public void testStringOpsRandom() throws ParseException {
         for (int ii=0; ii<100; ii++) {
-            final UUID uuid = UUIDUtil.randomUUID();
+            final UUID uuid = UUIDUtil.random();
             String s = uuid.toString();
             final UUID uuid2 = UUID.fromString(s);
             Assert.assertEquals(uuid, uuid2);

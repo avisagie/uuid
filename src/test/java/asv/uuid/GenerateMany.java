@@ -13,11 +13,11 @@ import java.util.concurrent.*;
 import static asv.uuid.UUIDUtil.*;
 
 public class GenerateMany {
-    private static UUID me = UUIDUtil.randomUUID();
+    private static UUID me = UUIDUtil.random();
 
     public static void main(String[] args) throws Exception {
         // init everything so long
-        random();
+        uniquer();
 
         for (;;) {
             genEpoch();
@@ -36,7 +36,7 @@ public class GenerateMany {
         System.err.println("Generating " + (System.currentTimeMillis() % 5000));
         System.err.flush();
         for (int i = 0; i < NUM; i++) {
-            uuids.add(randomUUID());
+            uuids.add(random());
         }
 
         System.err.println("Sorting");
@@ -46,7 +46,7 @@ public class GenerateMany {
         System.err.println("Writing");
         System.err.flush();
 
-        try (final OutputStream out = new BufferedOutputStream(new FileOutputStream(new File(randomUUID() + ".txt")))) {
+        try (final OutputStream out = new BufferedOutputStream(new FileOutputStream(new File(random() + ".txt")))) {
             for (UUID x : uuids) {
                 out.write(x.toString().getBytes());
                 out.write("\n".getBytes());

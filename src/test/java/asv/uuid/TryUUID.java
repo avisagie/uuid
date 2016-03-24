@@ -2,10 +2,10 @@ package asv.uuid;
 
 public class TryUUID {
     public static void main(String[] args) throws InterruptedException {
-        System.out.println(UUIDUtil.randomUUID());
-        System.out.println(UUIDUtil.randomUUID());
-        System.out.println(UUIDUtil.randomUUID());
-        System.out.println(UUIDUtil.randomUUID());
+        System.out.println(UUIDUtil.random());
+        System.out.println(UUIDUtil.random());
+        System.out.println(UUIDUtil.random());
+        System.out.println(UUIDUtil.random());
 
         System.out.println(UUIDUtil.epoch());
         Thread.sleep(400);
