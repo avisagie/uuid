@@ -90,27 +90,23 @@ final class Sha1Generator {
         return Arrays.copyOf(hash, 16);
     }
 
-    static java.util.UUID generateUniqueJava(boolean includeEpoch) {
-        final byte[] bytes = generateUniqueBytes(includeEpoch);
-        final long msb = UUIDUtil.msbFromBytes(bytes);
-        final long lsb = UUIDUtil.lsbFromBytes(bytes);
-        return new java.util.UUID(msb, lsb);
+    static java.util.UUID generateUniqueJava(boolean includeEpoch, long timestamp) {
+        final byte[] bytes = generateUniqueBytes(includeEpoch, timestamp);
+        return UUIDUtil.fromBytes(bytes);
     }
 
-    private static byte[] generateUniqueBytes(boolean includeEpoch) {
-        final long now = System.currentTimeMillis();
-
+    private static byte[] generateUniqueBytes(boolean includeEpoch, long timestamp) {
         final MessageDigest digest = sha1s.get();
         digest.reset();
 
         digest.update(macs);
-        if (!includeEpoch) digestLong(digest, now);
+        if (!includeEpoch) digestLong(digest, timestamp);
         digestLong(digest, counter.incrementAndGet());
 
         final byte[] hash = digest.digest();
 
         if (includeEpoch) {
-            final long epoch = now / 1000L;
+            final long epoch = timestamp / 1000L;
             hash[0] = (byte) ((epoch >>> 24) & 0xFF);
             hash[1] = (byte) ((epoch >>> 16) & 0xFF);
             hash[2] = (byte) ((epoch >>> 8) & 0xFF);

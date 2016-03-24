@@ -23,7 +23,18 @@ public class UUIDUtil {
      * @return
      */
     public static java.util.UUID epoch() {
-        return Sha1Generator.generateUniqueJava(true);
+        return Sha1Generator.generateUniqueJava(true, System.currentTimeMillis());
+    }
+
+    /**
+     * Generate UUIDs that have better uniqueness gaurantees than random
+     * UUIDs in addition to being sortable by generation time. You get to
+     * specify the timestamp.
+     *
+     * @return
+     */
+    public static java.util.UUID epoch(long timestamp) {
+        return Sha1Generator.generateUniqueJava(true, timestamp);
     }
 
     /**
@@ -33,7 +44,7 @@ public class UUIDUtil {
      * @return
      */
     public static java.util.UUID uniquer() {
-        return Sha1Generator.generateUniqueJava(false);
+        return Sha1Generator.generateUniqueJava(false, System.currentTimeMillis());
     }
 
     public static java.util.UUID uuid5(byte[] name) {
