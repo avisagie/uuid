@@ -1,4 +1,4 @@
-package asv.uuid;
+package za.asv.uuid;
 
 import java.util.UUID;
 

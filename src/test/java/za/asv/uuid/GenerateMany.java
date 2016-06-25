@@ -1,4 +1,6 @@
-package asv.uuid;
+package za.asv.uuid;
+
+import static za.asv.uuid.UUIDUtil.*;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -10,7 +12,7 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.*;
 
-import static asv.uuid.UUIDUtil.*;
+import za.asv.uuid.UUIDUtil;
 
 public class GenerateMany {
     private static UUID me = UUIDUtil.random();

@@ -1,4 +1,4 @@
-package asv.uuid;
+package za.asv.uuid;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;

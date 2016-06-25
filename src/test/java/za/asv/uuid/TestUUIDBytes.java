@@ -1,7 +1,9 @@
-package asv.uuid;
+package za.asv.uuid;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import za.asv.uuid.UUIDUtil;
 
 import java.text.ParseException;
 import java.util.UUID;

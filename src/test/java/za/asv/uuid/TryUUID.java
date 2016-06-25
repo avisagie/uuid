@@ -1,4 +1,6 @@
-package asv.uuid;
+package za.asv.uuid;
+
+import za.asv.uuid.UUIDUtil;
 
 public class TryUUID {
     public static void main(String[] args) throws InterruptedException {
