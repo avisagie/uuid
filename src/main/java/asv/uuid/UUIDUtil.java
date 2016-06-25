@@ -13,7 +13,7 @@ public class UUIDUtil {
      * 
      * Uses AES in counter mode. Starts with a SecureRandom IV.
      *
-     * @return
+     * @return a new UUID
      */
     public static java.util.UUID random() {
         return RandomUUIDGenerator.nextJava();
@@ -23,7 +23,7 @@ public class UUIDUtil {
      * Generate UUIDs that have better uniqueness behaviour than random
      * UUIDs in addition to being sortable by generation time.
      *
-     * @return
+     * @return a new UUID
      */
     public static java.util.UUID epoch() {
         return Sha1Generator.generateUniqueJava(true, System.currentTimeMillis());
@@ -34,7 +34,8 @@ public class UUIDUtil {
      * UUIDs in addition to being sortable by generation time. You get to
      * specify the timestamp.
      *
-     * @return
+     * @param timestamp A timestamp to include in the UUID.
+     * @return a new UUID
      */
     public static java.util.UUID epoch(long timestamp) {
         return Sha1Generator.generateUniqueJava(true, timestamp);
@@ -46,7 +47,7 @@ public class UUIDUtil {
      * counter. Each machine should generate a subset of the space. 
      * Holding thumbs...  
      *
-     * @return
+     * @return a new UUID
      */
     public static java.util.UUID uniquer() {
         return Sha1Generator.generateUniqueJava(false, System.currentTimeMillis());
@@ -61,9 +62,9 @@ public class UUIDUtil {
      * 
      * Excludes the timestamp from the hash.
      * 
-     * @param name
-     * @param timestamp
-     * @return
+     * @param name The raw data represented by the UUID.
+     * @param timestamp A timestamp to include in the UUID.
+     * @return a new UUID
      */
     public static java.util.UUID uuid5epoch(byte[] name, long timestamp) {
         return Sha1Generator.generate5Java(name, timestamp);
