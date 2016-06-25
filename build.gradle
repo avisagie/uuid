@@ -1,6 +1,7 @@
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'java'
+apply plugin: 'signing'
 
 group = 'asv'
 version = '1.2.0'
@@ -11,7 +12,28 @@ dependencies {
     testCompile "junit:junit:4.12"
 }
 
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type:Jar){
+    from sourceSets.main.allSource
+    classifier = 'source'
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
 task bench(type:JavaExec) {
     main = 'asv.uuid.BenchmarkGenerator'
     classpath = sourceSets.test.runtimeClasspath
 }
+
