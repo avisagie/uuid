@@ -4,8 +4,32 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
+def git_tag() {
+    def os = new ByteArrayOutputStream()
+    exec {
+    	commandLine = ['git', 'describe', '--tags', '--abbrev=0']
+	standardOutput = os
+    }
+    return os.toString().trim()
+}
+
+def git_count(tag) {
+    def os = new ByteArrayOutputStream()
+    exec {
+    	commandLine = ['git', 'rev-list', '--count', tag + '..HEAD']
+	standardOutput = os
+    }
+    return os.toString().trim()
+}
+
+def git_version() {    
+    def tag = git_tag()
+    def count = git_count(tag)
+    return tag + '.' + count
+}
+
 group = 'com.github.avisagie'
-version = '1.0.0'
+version = git_version()
 repositories {
     mavenCentral()
 }
