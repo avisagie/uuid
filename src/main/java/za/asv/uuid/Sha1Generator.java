@@ -103,11 +103,11 @@ final class Sha1Generator {
     }
 
     static java.util.UUID generateUniqueJava(boolean includeEpoch, long timestamp) {
-        final byte[] bytes = generateUniqueBytes(includeEpoch, timestamp);
+        final byte[] bytes = generateHashedBytes(includeEpoch, timestamp);
         return UUIDUtil.fromBytes(bytes);
     }
 
-    private static byte[] generateUniqueBytes(boolean includeEpoch, long timestamp) {
+    private static byte[] generateHashedBytes(boolean includeEpoch, long timestamp) {
         final MessageDigest digest = sha1s.get();
         digest.reset();
 
