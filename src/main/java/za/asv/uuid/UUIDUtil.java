@@ -41,14 +41,14 @@ public class UUIDUtil {
         return Sha1Generator.generateUniqueJava(true, timestamp);
     }
 
-    /**
-     * Generate UUIDs that should have better uniqueness behaviour than random
-     * UUIDs by virtue of hashing the mac addresses of the host together with a 
-     * counter. Each machine should generate a subset of the space. 
-     * Holding thumbs...  
-     *
-     * @return a new UUID
-     */
+	/**
+	 * Generate UUIDs that should have better uniqueness behaviour than random
+	 * UUIDs by virtue of hashing the mac addresses of the host together with a
+	 * timestamp and counter. Each machine should generate a subset of the
+	 * space. Holding thumbs...
+	 *
+	 * @return a new UUID
+	 */
     public static java.util.UUID uniquer() {
         return Sha1Generator.generateUniqueJava(false, System.currentTimeMillis());
     }
