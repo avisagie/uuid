@@ -30,6 +30,7 @@ def git_version() {
 
 group = 'com.github.avisagie'
 version = git_version()
+archivesBaseName = 'uuid'
 repositories {
     mavenCentral()
 }
