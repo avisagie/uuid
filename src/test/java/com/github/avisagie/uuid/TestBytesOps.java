@@ -1,9 +1,7 @@
-package za.asv.uuid;
+package com.github.avisagie.uuid;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import za.asv.uuid.UUIDUtil;
 
 public class TestBytesOps {
     @Test

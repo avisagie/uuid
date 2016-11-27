@@ -1,6 +1,4 @@
-package za.asv.uuid;
-
-import static za.asv.uuid.UUIDUtil.*;
+package com.github.avisagie.uuid;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -10,16 +8,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.*;
-
-import za.asv.uuid.UUIDUtil;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class GenerateMany {
     private static UUID me = UUIDUtil.random();
 
     public static void main(String[] args) throws Exception {
         // init everything so long
-        uniquer();
+        UUIDUtil.uniquer();
 
         for (;;) {
             genEpoch();
@@ -38,17 +37,17 @@ public class GenerateMany {
         System.err.println("Generating " + (System.currentTimeMillis() % 5000));
         System.err.flush();
         for (int i = 0; i < NUM; i++) {
-            uuids.add(random());
+            uuids.add(UUIDUtil.random());
         }
 
         System.err.println("Sorting");
         System.err.flush();
-        Collections.sort(uuids, lexicographicComparator());
+        Collections.sort(uuids, UUIDUtil.lexicographicComparator());
 
         System.err.println("Writing");
         System.err.flush();
 
-        try (final OutputStream out = new BufferedOutputStream(new FileOutputStream(new File(random() + ".txt")))) {
+        try (final OutputStream out = new BufferedOutputStream(new FileOutputStream(new File(UUIDUtil.random() + ".txt")))) {
             for (UUID x : uuids) {
                 out.write(x.toString().getBytes());
                 out.write("\n".getBytes());
@@ -77,13 +76,13 @@ public class GenerateMany {
         System.err.println("Generating " + (System.currentTimeMillis() % 1000));
         System.err.flush();
         for (int i = 0; i < NUM; i++) {
-            uuids.add(epoch());
+            uuids.add(UUIDUtil.epoch());
         }
 
         exec.execute(() -> {
             System.err.println("Sorting");
             System.err.flush();
-            Collections.sort(uuids, lexicographicComparator());
+            Collections.sort(uuids, UUIDUtil.lexicographicComparator());
 
             System.err.println("Writing");
             System.err.flush();

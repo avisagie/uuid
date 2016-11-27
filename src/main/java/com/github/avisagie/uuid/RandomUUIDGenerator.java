@@ -1,4 +1,4 @@
-package za.asv.uuid;
+package com.github.avisagie.uuid;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -55,12 +55,10 @@ class RandomUUIDGenerator {
 
         // encrypt
         final byte[] ret;
-        synchronized (cipher) {
-            try {
-                ret = cipher.get().doFinal(bytes);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        try {
+        	ret = cipher.get().doFinal(bytes);
+        } catch (Exception e) {
+        	throw new RuntimeException(e);
         }
 
         ret[6] &= 0x0f;  /* clear version        */

@@ -1,11 +1,9 @@
-package za.asv.uuid;
-
-import org.junit.Assert;
-
-import za.asv.uuid.UUIDUtil;
+package com.github.avisagie.uuid;
 
 import java.text.ParseException;
 import java.util.UUID;
+
+import org.junit.Assert;
 
 public class BenchmarkStringOps {
 

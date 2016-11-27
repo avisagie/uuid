@@ -1,6 +1,4 @@
-package za.asv.uuid;
-
-import za.asv.uuid.UUIDUtil;
+package com.github.avisagie.uuid;
 
 public class BenchmarkGenerator {
 

@@ -1,13 +1,11 @@
-package za.asv.uuid;
-
-import org.junit.Assert;
-import org.junit.Test;
-
-import za.asv.uuid.UUIDUtil;
+package com.github.avisagie.uuid;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.UUID;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 public class TestComparator {
 

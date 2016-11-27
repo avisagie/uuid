@@ -1,4 +1,4 @@
-package za.asv.uuid;
+package com.github.avisagie.uuid;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

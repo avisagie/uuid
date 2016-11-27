@@ -1,12 +1,10 @@
-package za.asv.uuid;
+package com.github.avisagie.uuid;
 
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import za.asv.uuid.UUIDUtil;
 
 public class TestUuid5Epoch {
 	@Test

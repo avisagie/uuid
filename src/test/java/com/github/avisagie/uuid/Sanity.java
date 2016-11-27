@@ -1,12 +1,10 @@
-package za.asv.uuid;
-
-import org.junit.Assert;
-import org.junit.Test;
-
-import za.asv.uuid.UUIDUtil;
+package com.github.avisagie.uuid;
 
 import java.util.HashSet;
 import java.util.UUID;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 public class Sanity {
     private static final int NUM = 10000000;
