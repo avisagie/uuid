@@ -2,6 +2,7 @@
 # epoch uuids with 32 bits of timestamp in the msb: who does adding more time
 # bits at the cost of more "random" bits affect probability of collisions?
 
+import sys
 import math
 import matplotlib.pylab as P
 from decimal import Decimal
@@ -62,14 +63,23 @@ n = range(16)
 random_bits = 96
 
 # rates per time window with so many bits used for the timestamp
-x = [rate/(1<<i) for i in n]
-p = [collision(rate/(1<<i), math.pow(2.0, random_bits-i)) for i in n]
-y = [(Decimal(1) - ((Decimal(1) - Decimal(math.pow(10,p[i]))) ** ((1<<i) * 24 * 3600 * 365 * years))).log10() for i in n]
+rates = [rate/(1<<i) for i in n]
+p = [collision(rates[i], math.pow(2.0, random_bits-i)) for i in n]
 
-print("bits: events/s\n", "\n".join(["  %02d: %01.01f" % (b,x) for (b,x) in zip(n,x)]))
+def invert(log10Prob):
+    return Decimal(1) - Decimal(math.pow(10, log10Prob))
+
+def numberOfTimeRanges(perSecond, years):                   
+    return perSecond * 24 * 3600 * 365 * years
+                                
+y = [(Decimal(1) - (invert(p[i]) ** numberOfTimeRanges(1<<i, years))).log10() for i in n]
+
+print("bits: events/s\n", "\n".join(["  %02d: %01.01f" % (b,x) for (b,x) in zip(n,rates)]))
+
+sys.stdout.flush()
 
 P.subplot(3,1,1)
-P.plot(n, x, '-+')
+P.plot(n, rates, '-+')
 P.title('events/s for so many bits extra in timestamp')
 P.grid()
 
